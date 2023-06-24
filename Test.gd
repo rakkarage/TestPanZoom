@@ -28,8 +28,6 @@ func _pan(delta: Vector2) -> void:
 func _zoom(at: Vector2, factor: Vector2) -> void:
 	var zoomOld := _camera.zoom
 	var zoomNew = (zoomOld + factor).clamp(_zoomMinVector, _zoomMaxVector)
-	var center := Vector2(size) / 2.0 # same as: _camera.get_viewport().get_visible_rect().size / 2.0
-	var positionOld := _camera.global_position
-	var positionNew = positionOld + ((at - center) / zoomOld + (center - at) / zoomNew)
 	_camera.zoom = zoomNew
-	_camera.global_position = positionNew
+	var center := Vector2(size) / 2.0 # same as: _camera.get_viewport().get_visible_rect().size / 2.0
+	_camera.global_position += ((at - center) / zoomOld + (center - at) / zoomNew)
