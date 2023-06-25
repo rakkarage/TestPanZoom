@@ -11,6 +11,6 @@ config_version=5
 [application]
 
 config/name="TestPanZoom"
-run/main_scene="res://Test.tscn"
+run/main_scene="res://TestNew.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
