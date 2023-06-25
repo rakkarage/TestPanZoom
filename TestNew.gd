@@ -23,7 +23,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == MOUSE_BUTTON_LEFT or event.button_index == MOUSE_BUTTON_MIDDLE:
 			_panning = event.pressed
 	elif event is InputEventMouseMotion and _panning:
-			_pan(event.relative)
+		_pan(event.relative)
 
 func _process(_delta: float) -> void:
 	if not _panning:
