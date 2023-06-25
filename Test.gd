@@ -13,8 +13,16 @@ const _pan_momentum_max := Vector2(100.0, 100.0)
 const _pan_momentum_threshold := 7.0
 const _pan_momentum_decay := 0.07
 const _pan_momentum_smoothing := 0.9
+const _pan_momentum_reset := 0.1
 var _panning := false
 var _pan_momentum := Vector2.ZERO
+var _pan_momentum_timer := Timer.new()
+
+func _ready() -> void:
+	add_child(_pan_momentum_timer)
+	_pan_momentum_timer.wait_time = _pan_momentum_reset
+	_pan_momentum_timer.one_shot = true
+	_pan_momentum_timer.connect("timeout", func(): _pan_momentum = Vector2.ZERO)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -24,8 +32,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_zoom(event.global_position, -_zoom_factor)
 		elif event.button_index == MOUSE_BUTTON_LEFT or event.button_index == MOUSE_BUTTON_MIDDLE:
 			_panning = event.pressed
+			if not _panning:
+				_pan_momentum_timer.stop()
 	elif event is InputEventMouseMotion and _panning:
 		_pan(event.relative)
+		_pan_momentum_timer.start()
 
 func _process(_delta: float) -> void:
 	if not _panning:
