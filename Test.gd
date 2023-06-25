@@ -9,6 +9,8 @@ const _zoom_max_vector := Vector2(_zoom_max, _zoom_max)
 const _zoom_factor := 0.1
 const _zoom_factor_base := 10.0
 
+const _pan_momentum_max := Vector2(100.0, 100.0)
+const _pan_momentum_smoothing := 0.9
 var _panning := false
 var _pan_momentum := Vector2.ZERO
 
@@ -29,7 +31,8 @@ func _process(_delta: float) -> void:
 		_pan_momentum = _pan_momentum.lerp(Vector2.ZERO, 0.1)
 
 func _pan(delta: Vector2) -> void:
-	_pan_momentum = delta
+	var new_pan_momentum = _pan_momentum * _pan_momentum_smoothing + delta * (1.0 - _pan_momentum_smoothing)
+	_pan_momentum = new_pan_momentum.clamp(-_pan_momentum_max, _pan_momentum_max)
 	_camera.global_position -= delta / _camera.zoom
 
 func _zoom(at: Vector2, factor: float) -> void:
