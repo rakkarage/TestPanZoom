@@ -1,4 +1,4 @@
-extends SubViewport
+extends Node2D
 
 @onready var _camera: Camera2D = $Camera2D
 
@@ -10,6 +10,8 @@ const _zoom_factor := 0.1
 const _zoom_factor_base := 10.0
 
 const _pan_momentum_max := Vector2(100.0, 100.0)
+const _pan_momentum_threshold := 7.0
+const _pan_momentum_decay := 0.07
 const _pan_momentum_smoothing := 0.9
 var _panning := false
 var _pan_momentum := Vector2.ZERO
@@ -27,8 +29,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	if not _panning:
-		_camera.global_position -= _pan_momentum / _camera.zoom
-		_pan_momentum = _pan_momentum.lerp(Vector2.ZERO, 0.1)
+		if _pan_momentum.length() > _pan_momentum_threshold:
+			_camera.global_position -= _pan_momentum / _camera.zoom
+	_pan_momentum = _pan_momentum.lerp(Vector2.ZERO, _pan_momentum_decay)
 
 func _pan(delta: Vector2) -> void:
 	var new_pan_momentum := _pan_momentum * _pan_momentum_smoothing + delta * (1.0 - _pan_momentum_smoothing)
@@ -39,5 +42,5 @@ func _zoom(at: Vector2, factor: float) -> void:
 	var zoom_old := _camera.zoom
 	var zoom_new := (zoom_old * pow(_zoom_factor_base, factor)).clamp(_zoom_min_vector, _zoom_max_vector)
 	_camera.zoom = zoom_new
-	var center := Vector2(size) / 2.0 # same as: _camera.get_viewport().get_visible_rect().size / 2.0
+	var center := _camera.get_viewport().get_visible_rect().size / 2.0
 	_camera.global_position += ((at - center) / zoom_old + (center - at) / zoom_new)
