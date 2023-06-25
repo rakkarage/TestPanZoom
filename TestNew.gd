@@ -31,13 +31,13 @@ func _process(_delta: float) -> void:
 		_pan_momentum = _pan_momentum.lerp(Vector2.ZERO, 0.1)
 
 func _pan(delta: Vector2) -> void:
-	var new_pan_momentum = _pan_momentum * _pan_momentum_smoothing + delta * (1.0 - _pan_momentum_smoothing)
+	var new_pan_momentum := _pan_momentum * _pan_momentum_smoothing + delta * (1.0 - _pan_momentum_smoothing)
 	_pan_momentum = new_pan_momentum.clamp(-_pan_momentum_max, _pan_momentum_max)
 	_camera.global_position -= delta / _camera.zoom
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var zoom_old := _camera.zoom
-	var zoom_new = (zoom_old * pow(_zoom_factor_base, factor)).clamp(_zoom_min_vector, _zoom_max_vector)
+	var zoom_new := (zoom_old * pow(_zoom_factor_base, factor)).clamp(_zoom_min_vector, _zoom_max_vector)
 	_camera.zoom = zoom_new
 	var center := _camera.get_viewport().get_visible_rect().size / 2.0
 	_camera.global_position += ((at - center) / zoom_old + (center - at) / zoom_new)
