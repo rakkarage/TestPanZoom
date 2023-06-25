@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 @onready var _camera: Camera2D = $Camera2D
 
