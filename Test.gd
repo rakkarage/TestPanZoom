@@ -2,18 +2,17 @@ extends Node2D
 
 @onready var _camera: Camera2D = $Camera2D
 
-const _zoom_min := 0.2
-const _zoom_min_vector := Vector2(_zoom_min, _zoom_min)
-const _zoom_max := 16.0
-const _zoom_max_vector := Vector2(_zoom_max, _zoom_max)
-const _zoom_factor := 0.1
-const _zoom_factor_base := 10.0
-
-const _pan_momentum_max := Vector2(100.0, 100.0)
-const _pan_momentum_threshold := 7.0
-const _pan_momentum_decay := 0.07
-const _pan_momentum_smoothing := 0.9
-const _pan_momentum_reset := 0.1
+@export_group("Zoom")
+@export var _zoom_min := 0.2
+@export var _zoom_max := 16.0
+@export var _zoom_factor := 0.1
+@export var _zoom_factor_base := 10.0
+@export_group("Pan")
+@export var _pan_momentum_max := Vector2(100.0, 100.0)
+@export var _pan_momentum_threshold := 7.0
+@export var _pan_momentum_decay := 0.07
+@export var _pan_momentum_smoothing := 0.9
+@export var _pan_momentum_reset := 0.1
 var _panning := false
 var _pan_momentum := Vector2.ZERO
 var _pan_momentum_timer := Timer.new()
@@ -51,7 +50,7 @@ func _pan(delta: Vector2) -> void:
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var zoom_old := _camera.zoom
-	var zoom_new := (zoom_old * pow(_zoom_factor_base, factor)).clamp(_zoom_min_vector, _zoom_max_vector)
+	var zoom_new := (zoom_old * pow(_zoom_factor_base, factor)).clamp(Vector2(_zoom_min, _zoom_min), Vector2(_zoom_max, _zoom_max))
 	_camera.zoom = zoom_new
 	var center := _camera.get_viewport().get_visible_rect().size / 2.0
 	_camera.global_position += ((at - center) / zoom_old + (center - at) / zoom_new)
